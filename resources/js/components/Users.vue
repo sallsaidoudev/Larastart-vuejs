@@ -129,16 +129,20 @@
             },
            CreateUser(){
                // Submit the form via a POST request.
-               this.form.post('/api/user');
+               this.form.post('/api/user')
+                   .then(()=>{
+                       Fire.$emit('EventAfterCreated')
 
-                Fire.$emit('EventAfterCreated')
+                       $('#add_user').modal('hide');
 
-               $('#add_user').modal('hide');
+                       toast.fire({
+                           type: 'success',
+                           title: 'User Created successfully'
+                       })
+                   })
+                   .catch(()=>{
 
-               toast.fire({
-                   type: 'success',
-                   title: 'User Created successfully'
-               })
+                   })
            }
         },
         created() {

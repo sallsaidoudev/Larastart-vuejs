@@ -1948,13 +1948,14 @@ __webpack_require__.r(__webpack_exports__);
     },
     CreateUser: function CreateUser() {
       // Submit the form via a POST request.
-      this.form.post('/api/user');
-      Fire.$emit('EventAfterCreated');
-      $('#add_user').modal('hide');
-      toast.fire({
-        type: 'success',
-        title: 'User Created successfully'
-      });
+      this.form.post('/api/user').then(function () {
+        Fire.$emit('EventAfterCreated');
+        $('#add_user').modal('hide');
+        toast.fire({
+          type: 'success',
+          title: 'User Created successfully'
+        });
+      }).catch(function () {});
     }
   },
   created: function created() {
