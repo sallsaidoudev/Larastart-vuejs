@@ -7,7 +7,7 @@
                         <h3 class="card-title">Users information</h3>
 
                         <div class="card-tools">
-                            <button class="btn btn-success" data-toggle="modal" data-target="#add_user"><i class="fa fa-user-plus"></i>
+                            <button class="btn btn-success" @click="newModal"><i class="fa fa-user-plus"></i>
                                 Ajouter</button>
                         </div>
                     </div>
@@ -28,7 +28,7 @@
                                 <td>{{user.email}}</td>
                                 <td><span class="tag tag-success">{{user.type|upText}}</span></td>
                                 <td><span class="tag tag-success">{{user.created_at|myDate}}</span></td>
-                                <td><a class="btn btn-dark" href="#">
+                                <td><a class="btn btn-dark" href="#" @click="editModal(user)">
                                     <i class="fa fa-edit"></i>
                                 </a>
                                     /
@@ -109,6 +109,7 @@
     export default {
         data(){
             return {
+                editmode:true,
                 users:{},
                 // Create a new form instance
                 form: new Form({
@@ -122,6 +123,15 @@
             }
         },
         methods:{
+            newModal(){
+                this.form.reset();
+                $('#add_user').modal('show');
+            },
+            editModal(user){
+                this.form.reset();
+                $('#add_user').modal('show');
+                this.form.fill(user);
+            },
             deleteUser(id){
                 swal.fire({
                     title: 'Are you sure?',
@@ -130,23 +140,24 @@
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
+                    confirmButtonText: 'Yes, delete!'
                 }).then((result) => {
+                    if (result.value) {
+                        // Send request to the server
+                        this.form.delete('api/user/' + id).then(() => {
 
-                    // Send request to the server
-                    this.form.delete('api/user/'+id).then(()=>{
-                        if (result.value) {
                             swal.fire(
                                 'Deleted!',
                                 'Your file has been deleted.',
                                 'success'
                             )
-                        }
-                    }).catch(()=>{
-                        swal.fire('Failed!',
-                            'there was something wrong.',
-                            'warning');
-                    })
+                            Fire.$emit('EventAfterCreated');
+                        }).catch(() => {
+                            swal.fire('Failed!',
+                                'there was something wrong.',
+                                'warning');
+                        });
+                    }
                 })
             },
             LoadUser(){
@@ -158,7 +169,7 @@
                // Submit the form via a POST request.
                this.form.post('/api/user')
                    .then(()=>{
-                       Fire.$emit('EventAfterCreated')
+                       Fire.$emit('EventAfterCreated');
 
                        $('#add_user').modal('hide');
 
