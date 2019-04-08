@@ -48,12 +48,13 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Nouvelle utilisateur</h5>
+                        <h5 v-show="!editmode" class="modal-title" id="exampleModalLabel">Nouvelle utilisateur</h5>
+                        <h5 v-show="editmode" class="modal-title" id="exampleModalLabe">Mise à jour info utilisateur</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form @submit.prevent="CreateUser">
+                    <form @submit.prevent="editmode ? UpdateUser() : CreateUser()">
                         <div class="modal-body">
 
                             <div class="form-group">
@@ -95,7 +96,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="reset" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                            <button v-show="editmode" type="submit" class="btn btn-success">Modifier</button>
+                            <button v-show="!editmode" type="submit" class="btn btn-primary">Enregistrer</button>
                         </div>
                     </form>
                 </div>
@@ -109,10 +111,11 @@
     export default {
         data(){
             return {
-                editmode:true,
+                editmode:false,
                 users:{},
                 // Create a new form instance
                 form: new Form({
+                    id:'',
                     name: '',
                     email: '',
                     password: '',
@@ -124,10 +127,30 @@
         },
         methods:{
             newModal(){
+                this.editmode=false;
                 this.form.reset();
                 $('#add_user').modal('show');
             },
+            UpdateUser()
+            {
+                this.$Progress.start();
+                this.form.put('api/user/' + this.form.id).then(()=>{
+                    $('#add_user').modal('hide');
+                    swal.fire(
+                        'Updated!',
+                        'Information has been updated.',
+                        'success'
+                    )
+                    this.$Progress.finish();
+                    Fire.$emit('EventAfterCreated');
+                    })
+                    .catch(()=>{
+                      this.$Progress.fail();
+                });
+
+            },
             editModal(user){
+                this.editmode=true;
                 this.form.reset();
                 $('#add_user').modal('show');
                 this.form.fill(user);
@@ -183,6 +206,7 @@
                    })
            }
         },
+
         created() {
            this.LoadUser();
            Fire.$on('EventAfterCreated',()=>{
