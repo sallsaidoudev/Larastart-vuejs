@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\UserRequest;
 use App\User;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 
@@ -43,6 +42,12 @@ class UserController extends Controller
           'password'=>Hash::make($request['password']),
        ]);
     }
+
+    public function profile()
+    {
+        return auth('api')->user();
+    }
+
 
     /**
      * Display the specified resource.
