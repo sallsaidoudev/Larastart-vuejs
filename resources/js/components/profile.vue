@@ -21,7 +21,7 @@
                         <h5 class="widget-user-desc">{{this.form.type}}</h5>
                     </div>
                     <div class="widget-user-image">
-                        <img class="img-circle" src="" alt="User Avatar">
+                        <img class="img-circle" :src="getProfilePhoto()" alt="User Avatar">
                     </div>
                     <div class="card-footer">
                         <div class="row">
@@ -159,10 +159,15 @@
             console.log('Component mounted.')
         },
         methods:{
+            getProfilePhoto(){
+               //solution n°1 return "img/profile/"+this.form.photo;
+                let photo = (this.form.photo.length > 200) ? this.form.photo : "public/img/profile/"+ this.form.photo ;
+                return photo;
+            },
            updateInfo(){
              this.$Progress.start();
              this.form.put('api/profile/').then(()=>{
-
+                // Fire.$emit('EventAfterCreated');
               this.$Progress.finish();
              }).catch(()=>{
                  this.$Progress.fail();
@@ -174,7 +179,7 @@
                let reader = new FileReader();
                let limit = 1024 * 1024 * 2;
                if(file['size'] > limit){
-                   swal({
+                   swal.fire({
                        type: 'error',
                        title: 'Oops...',
                        text: 'You are uploading a large file',
