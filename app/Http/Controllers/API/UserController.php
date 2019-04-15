@@ -12,7 +12,7 @@ class UserController extends Controller
 
     public function __construct()
     {
-     $this->middleware('auth:api');
+    $this->middleware('auth:api');
     }
 
     /**
@@ -48,6 +48,23 @@ class UserController extends Controller
         return auth('api')->user();
     }
 
+    public function updateProfile(UserRequest $request){
+        $user=auth('api')->user();
+        $currentPhoto=$user->photo;
+        if($request->photo !=$currentPhoto) {
+            $name = time() . '.' . explode('/', explode(':', substr($request->photo, 0,
+                    strpos($request->photo, ';')))[1])[1];
+            \Image::make($request->photo)->save(public_path('img/profile/').$name);
+
+            $request->merge(['photo' => $name]);
+        }
+
+        if(!empty($request->password)){
+            $request->merge(['password' => Hash::make($request['password'])]);
+        }
+
+        $user->update($request->all());
+    }
 
     /**
      * Display the specified resource.

@@ -3029,22 +3029,11 @@ __webpack_require__.r(__webpack_exports__);
     console.log('Component mounted.');
   },
   methods: {
-    getProfilePhoto: function getProfilePhoto() {
-      var photo = this.form.photo.length > 200 ? this.form.photo : "img/profile/" + this.form.photo;
-      return photo;
-    },
     updateInfo: function updateInfo() {
       var _this = this;
 
       this.$Progress.start();
-
-      if (this.form.password == '') {
-        this.form.password = undefined;
-      }
-
-      this.form.put('api/profile').then(function () {
-        Fire.$emit('AfterCreate');
-
+      this.form.put('api/profile/').then(function () {
         _this.$Progress.finish();
       }).catch(function () {
         _this.$Progress.fail();
@@ -3053,12 +3042,13 @@ __webpack_require__.r(__webpack_exports__);
     updateProfile: function updateProfile(e) {
       var _this2 = this;
 
+      //upload la photo et l'encode en base64
       var file = e.target.files[0];
       var reader = new FileReader();
       var limit = 1024 * 1024 * 2;
 
       if (file['size'] > limit) {
-        swal.fire({
+        swal({
           type: 'error',
           title: 'Oops...',
           text: 'You are uploading a large file'
@@ -61967,24 +61957,19 @@ var render = function() {
             ]
           ),
           _vm._v(" "),
-          _c("div", { staticClass: "widget-user-image" }, [
-            _c("img", {
-              staticClass: "img-circle",
-              attrs: { src: _vm.getProfilePhoto(), alt: "User Avatar" }
-            })
-          ]),
+          _vm._m(0),
           _vm._v(" "),
-          _vm._m(0)
+          _vm._m(1)
         ])
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "col-md-12" }, [
         _c("div", { staticClass: "card" }, [
-          _vm._m(1),
+          _vm._m(2),
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
             _c("div", { staticClass: "tab-content" }, [
-              _vm._m(2),
+              _vm._m(3),
               _vm._v(" "),
               _c(
                 "div",
@@ -62247,6 +62232,17 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "widget-user-image" }, [
+      _c("img", {
+        staticClass: "img-circle",
+        attrs: { src: "", alt: "User Avatar" }
+      })
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
