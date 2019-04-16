@@ -3031,7 +3031,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     getProfilePhoto: function getProfilePhoto() {
       //solution n°1 return "img/profile/"+this.form.photo;
-      var photo = this.form.photo.length > 200 ? this.form.photo : "public/img/profile/" + this.form.photo;
+      var photo = this.form.photo.length > 200 ? this.form.photo : "img/profile/" + this.form.photo;
       return photo;
     },
     updateInfo: function updateInfo() {
@@ -3039,7 +3039,8 @@ __webpack_require__.r(__webpack_exports__);
 
       this.$Progress.start();
       this.form.put('api/profile/').then(function () {
-        // Fire.$emit('EventAfterCreated');
+        Fire.$emit('EventAfterCreated');
+
         _this.$Progress.finish();
       }).catch(function () {
         _this.$Progress.fail();

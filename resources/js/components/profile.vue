@@ -161,13 +161,13 @@
         methods:{
             getProfilePhoto(){
                //solution n°1 return "img/profile/"+this.form.photo;
-                let photo = (this.form.photo.length > 200) ? this.form.photo : "public/img/profile/"+ this.form.photo ;
+                let photo = (this.form.photo.length > 200) ? this.form.photo : "img/profile/"+ this.form.photo ;
                 return photo;
             },
            updateInfo(){
              this.$Progress.start();
              this.form.put('api/profile/').then(()=>{
-                // Fire.$emit('EventAfterCreated');
+                 Fire.$emit('EventAfterCreated');
               this.$Progress.finish();
              }).catch(()=>{
                  this.$Progress.fail();
