@@ -191,7 +191,7 @@
                 })
             },
             LoadUser(){
-                if (this.$gate.isAdmin()){
+                if (this.$gate.isAdminOrUser()){
                 this.$Progress.start();
                 axios.get("api/user").then(({data})=>(this.users=data.data));
                 this.$Progress.finish();}

@@ -2027,7 +2027,7 @@ __webpack_require__.r(__webpack_exports__);
     LoadUser: function LoadUser() {
       var _this3 = this;
 
-      if (this.$gate.isAdmin()) {
+      if (this.$gate.isAdminOrUser()) {
         this.$Progress.start();
         axios.get("api/user").then(function (_ref) {
           var data = _ref.data;
@@ -77592,6 +77592,13 @@ function () {
     key: "isAuthor",
     value: function isAuthor() {
       return this.user.type === 'author';
+    }
+  }, {
+    key: "isAdminOrUser",
+    value: function isAdminOrUser() {
+      if (this.user.type === 'admin' || this.user.type === 'user') {
+        return true;
+      }
     }
   }]);
 
