@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="row mt-5">
-            <div class="col-12">
+            <div class="col-12" v-if="$gate.isAdmin()">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Users information</h3>
@@ -44,6 +44,13 @@
                 <!-- /.card -->
             </div>
         </div>
+
+        <!-- end table -->
+        <div v-if="!this.$gate.isAdmin()">
+            <not-found></not-found>
+        </div>
+        <!-- Modal -->
+
         <div class="modal fade" id="add_user" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -184,10 +191,11 @@
                 })
             },
             LoadUser(){
+                if (this.$gate.isAdmin()){
                 this.$Progress.start();
                 axios.get("api/user").then(({data})=>(this.users=data.data));
-                this.$Progress.finish();
-            },
+                this.$Progress.finish();}
+        },
            CreateUser(){
                // Submit the form via a POST request.
                this.form.post('/api/user')
