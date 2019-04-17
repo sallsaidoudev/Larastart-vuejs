@@ -22,3 +22,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 //route pour eviter error 404 du vuerouter ( quand on tape manuellement l'url dans le navigateur
 Route::get('{path}', 'HomeController@index')->where( 'path' , '([A-z\d\-\/_.]+)?' );
 //---------------------------------------------------------------------------------------------
+
+Route::get('invoice',function (){
+   return view('invoice');
+});
