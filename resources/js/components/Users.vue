@@ -22,7 +22,7 @@
                                 <th>Registered at</th>
                                 <th>Operations</th>
                             </tr>
-                            <tr v-for="user in users" :key="user.id">
+                            <tr v-for="user in users.data" :key="user.id">
                                 <td>{{user.id}}</td>
                                 <td>{{user.name}}</td>
                                 <td>{{user.email}}</td>
@@ -40,6 +40,9 @@
                             </tbody></table>
                     </div>
                     <!-- /.card-body -->
+                    <div class="card-footer">
+                        <pagination :data="users" align="right" @pagination-change-page="getResults"></pagination>
+                    </div>
                 </div>
                 <!-- /.card -->
             </div>
@@ -133,6 +136,13 @@
             }
         },
         methods:{
+            getResults(page = 1) {
+                axios.get('api/user?page=' + page)
+                    .then(response => {
+                        this.users = response.data;
+                    });
+            }
+            ,
             newModal(){
                 this.editmode=false;
                 this.form.reset();
@@ -193,7 +203,7 @@
             LoadUser(){
                 if (this.$gate.isAdminOrUser()){
                 this.$Progress.start();
-                axios.get("api/user").then(({data})=>(this.users=data.data));
+                axios.get("api/user").then(({data})=>(this.users=data));
                 this.$Progress.finish();}
         },
            CreateUser(){
@@ -216,6 +226,15 @@
         },
 
         created() {
+           Fire.$on('searching',()=>{
+              let query=this.$parent.search;
+              axios.get('api/findUser?q='+query).then((data)=>
+              {
+                this.users=data.data
+              }).catch(()=>{
+
+              })
+           });
            this.LoadUser();
            Fire.$on('EventAfterCreated',()=>{
                this.LoadUser();

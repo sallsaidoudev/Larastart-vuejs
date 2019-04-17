@@ -40,6 +40,7 @@ let routes = [
     { path: '/profile', component: require('./components/profile.vue').default },
     { path: '/developer', component: require('./components/developer.vue').default },
     { path: '/users', component: require('./components/Users.vue').default },
+    { path: '*', component: require('./components/NotFound.vue').default }, //permet de capturé les urls qui n'existe pas
 ]
 
 const router = new VueRouter({
@@ -73,9 +74,10 @@ window.Fire=new Vue()
  */
 
 Vue.component(
-    'not-found',
-    require('./components/NotFound.vue').default
+    'not-found', require('./components/NotFound.vue').default
 );
+
+Vue.component('pagination', require('laravel-vue-pagination'));
 
 Vue.component(
     'passport-clients',
@@ -106,5 +108,13 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 
 const app = new Vue({
     el: '#app',
-    router
+    router,
+    data:{
+        search:'',
+    },
+    methods:{
+        searchit: _.debounce(()=>{
+            Fire.$emit('searching');
+        },1000)
+    }
 });

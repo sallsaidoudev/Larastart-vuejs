@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Requests\UserRequest;
 use App\User;
 use App\Http\Controllers\Controller;
-use Illuminate\Auth\Access\Gate;
+
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -25,8 +25,8 @@ class UserController extends Controller
     public function index()
     {
        // $this->authorize('isAdmin');
-        if (Gate::allows('isAdmin')|| Gate::allows('isUser')){
-            return User::latest()->paginate(10);
+        if (\Gate::allows('isAdmin')|| \Gate::allows('isUser')){
+            return User::latest()->paginate(3);
         }
 
     }
@@ -49,11 +49,34 @@ class UserController extends Controller
        ]);
     }
 
+    /**
+     * @return mixed
+     */
+    public function search(){
+        if($search=\Request::get('q')){
+            $users=User::where(function ($query) use ($search){
+                $query->where('name','LIKE',"%$search%")
+                      ->orWhere('email','LIKE',"%$search%")
+                      ->orWhere('type','LIKE',"%$search%");
+            })->paginate(3);
+        }
+         else{
+             $users=User::latest()->paginate(3);
+         }
+        return $users;
+    }
+
+    /**
+     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     */
     public function profile()
     {
         return auth('api')->user();
     }
 
+    /**
+     * @param UserRequest $request
+     */
     public function updateProfile(UserRequest $request){
         $user=auth('api')->user();
         $currentPhoto=$user->photo;
